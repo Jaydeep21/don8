@@ -4,12 +4,15 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Objects;
 
 @Entity
@@ -21,13 +24,26 @@ import java.util.Objects;
 @Builder
 public class User implements UserDetails {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     BigInteger uid;
+    @NotBlank
+    @Size(max = 100)
     String name;
+    @Size(max = 1000)
     String aids;
-    String phone;
+    @NotNull
+    BigInteger phone;
+    @Email
+    @NotBlank
+    @Size(max = 100)
     String email;
+    @Size(max = 100)
     String profile_image;
+    @NotBlank
+    @Size(max = 200)
     String password;
+    @NotBlank
+    @Size(max = 50)
     String role;
     Timestamp created_date;
     Timestamp updated_date;
