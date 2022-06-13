@@ -14,6 +14,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+/**
+  @author BHARAT VAYITLA
+ */
+
 @Service
 public class JwtUserDetailsService implements UserDetailsService {
 
@@ -22,8 +26,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 
     @Override
     public User loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email)
+        return userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + email));
-        return user;
     }
 }
