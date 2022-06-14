@@ -13,6 +13,7 @@ import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -47,6 +48,8 @@ public class User implements UserDetails {
     String role;
     Timestamp created_date;
     Timestamp updated_date;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    List<Product> product;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -3,10 +3,7 @@ package com.don8.model;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.math.BigInteger;
 import java.util.Date;
 
@@ -22,8 +19,8 @@ import java.util.Date;
 @Setter
 @Builder
 public class Product {
-    @Id
-    @Column
+   @Id
+   @GeneratedValue(strategy = GenerationType.IDENTITY)
    private BigInteger pid;
     @Column
     private BigInteger uid;
@@ -41,5 +38,7 @@ public class Product {
     private String aid;
     @Column
     private BigInteger price;
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "uid",referencedColumnName = "uid",insertable = false, updatable = false)
+    User user;
 }

@@ -24,7 +24,7 @@ public class ProductService {
     //getting a specific record by using the method findById() of CrudRepository
     public Product getProductById(BigInteger pid)
     {
-        return productRepository.findByProductId(String.valueOf(pid)).orElse(null);
+        return productRepository.findById(pid).get();
     }
     //saving a specific record by using the method save() of CrudRepository
     public void saveOrUpdate(Product product)
