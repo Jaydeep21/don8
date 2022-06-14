@@ -26,26 +26,28 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     BigInteger uid;
-    @NotBlank
     @Size(max = 100)
+    @NotBlank(message = "Name is mandatory")
     String name;
     @Size(max = 1000)
     String aids;
     @NotNull
     BigInteger phone;
     @Email
-    @NotBlank
+    @NotBlank(message = "Email is mandatory")
     @Size(max = 100)
     String email;
     @Size(max = 100)
     String profile_image;
-    @NotBlank
+    @NotBlank(message = "Password is mandatory")
     @Size(max = 200)
     String password;
-    @NotBlank
+    @NotBlank(message = "Role is mandatory")
     @Size(max = 50)
     String role;
+//    @NotNull(message = "Created Date is mandatory")
     Timestamp created_date;
+//    @NotNull(message = "Updated Date is mandatory")
     Timestamp updated_date;
 
     @Override

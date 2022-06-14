@@ -16,9 +16,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -53,13 +55,7 @@ public class JwtAuthenticationController {
         String jwt = jwtUtils.generateJwtToken(authentication);
 
         User userDetails = (User) authentication.getPrincipal();
-        return ResponseEntity.ok(GenericResponse.builder().body(new JwtResponse(jwt,
-                userDetails.getUid(),
-                userDetails.getUsername(),
-                userDetails.getEmail(),
-                new Date(),
-                new Date((new Date()).getTime() + jwtExpirationMs)
-        )).message("Success").build());
+        return ResponseEntity.ok(GenericResponse.builder().body(jwt).message("Success").build());
 
     }
 
@@ -78,13 +74,32 @@ public class JwtAuthenticationController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signup( @RequestBody User user) {
+    public ResponseEntity<?> signup(@Valid  @NotNull @RequestBody User user) {
         try {
             user = userService.storeUser(user);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<GenericResponse>(GenericResponse.builder().body(null).message(e.getMessage()).build(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<GenericResponse>(GenericResponse.builder().body(e.getMessage()).message("Error").build(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return ResponseEntity.ok(GenericResponse.builder().body(user).message("Success").build());
     }
+    @PostMapping("/forgot")
+    public ResponseEntity<GenericResponse> resetPassword( @RequestBody Email email){
+        String otp;
+        try {
+            otp = emailVerification.sendEmail(email.getEmail());
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<GenericResponse>(GenericResponse.builder().body(null).message(e.getMessage()).build(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return ResponseEntity.ok(GenericResponse.builder().body(otp).message("Success").build());
+    }
+    @PostMapping("/password")
+    public ResponseEntity<GenericResponse> changePassword( @RequestBody JwtRequest jwtRequest){
+        if(userService.resetPassword(jwtRequest))
+            return ResponseEntity.ok(GenericResponse.builder().body("Updated Password Successfully").message("Success").build());
+        return ResponseEntity.ok(GenericResponse.builder().body("Could not update password as email does not exists").message("Error").build());
+
+    }
+
 }
