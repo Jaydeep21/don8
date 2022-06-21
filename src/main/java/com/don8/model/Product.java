@@ -1,12 +1,10 @@
 package com.don8.model;
 
 
+import com.don8.model.dbentity.User;
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.math.BigInteger;
 import java.util.Date;
 
@@ -24,9 +22,9 @@ import java.util.Date;
 public class Product {
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
-   private BigInteger pid;
+   private Long pid;
     @Column
-    private BigInteger uid;
+    private Long uid;
     @Column
     private String productName;
     @Column
@@ -38,7 +36,7 @@ public class Product {
     @Column
     private String description;
     @Column
-    private String aid;
+    private Long aid;
     @Column
     private BigInteger price;
     @ManyToOne(fetch = FetchType.LAZY)

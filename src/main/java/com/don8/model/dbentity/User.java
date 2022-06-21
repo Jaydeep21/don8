@@ -1,5 +1,7 @@
-package com.don8.model;
+package com.don8.model.dbentity;
 
+import com.don8.model.Product;
+import com.don8.model.dbentity.AuditModel;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,6 +15,7 @@ import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
