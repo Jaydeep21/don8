@@ -11,5 +11,5 @@ import java.util.Optional;
  */
 
 public interface ProductRepository extends JpaRepository<Product, BigInteger> {
-    //Optional<Product> findByProductId(String pid);
+    Optional<Product> findByPid(BigInteger pid);
 }

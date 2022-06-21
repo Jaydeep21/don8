@@ -13,41 +13,39 @@ import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "user", schema = "public")
+@Table(name = "user", schema = "public", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "email")
+})
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Builder
-public class User implements UserDetails {
+public class User extends AuditModel implements UserDetails {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    BigInteger uid;
-    @NotBlank
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name="uid", insertable=true, updatable=true, unique=true, nullable=false)
+    private Long uid;
     @Size(max = 100)
-    String name;
-    @Size(max = 1000)
-    String aids;
+    @NotBlank(message = "Name is mandatory")
+    private String name;
     @NotNull
-    BigInteger phone;
+    private BigInteger phone;
     @Email
-    @NotBlank
+    @NotBlank(message = "Email is mandatory")
     @Size(max = 100)
-    String email;
+    private String email;
     @Size(max = 100)
-    String profile_image;
-    @NotBlank
+    private String profile_image;
+    @NotBlank(message = "Password is mandatory")
     @Size(max = 200)
-    String password;
-    @NotBlank
+    private String password;
+    @NotBlank(message = "Role is mandatory")
     @Size(max = 50)
-    String role;
-    Timestamp created_date;
-    Timestamp updated_date;
+    private String role;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     List<Product> product;
 

@@ -3,7 +3,10 @@ package com.don8.model;
 
 import lombok.*;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.math.BigInteger;
 import java.util.Date;
 
@@ -12,7 +15,7 @@ import java.util.Date;
  */
 
 @Entity
-@Table(name="product", schema = "public")
+@Table(name="product")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
