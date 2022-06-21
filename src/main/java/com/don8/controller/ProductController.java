@@ -33,7 +33,7 @@ public class ProductController {
     }
     //creating post mapping that post the product detail in the database
     @PostMapping("/product")
-    private BigInteger saveBook(@RequestBody Product product)
+    private Long saveBook(@RequestBody Product product)
     {
         productService.saveOrUpdate(product);
         return product.getPid();

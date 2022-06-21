@@ -1,6 +1,6 @@
 package com.don8.config;
 
-import com.don8.model.User;
+import com.don8.model.dbentity.User;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

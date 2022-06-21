@@ -1,6 +1,7 @@
 package com.don8.model;
 
 
+import com.don8.model.dbentity.AuditModel;
 import lombok.*;
 
 import javax.persistence.Column;
@@ -15,31 +16,30 @@ import java.util.Date;
  */
 
 @Entity
-@Table(name="product", schema = "public")
+@Table(name="product")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Builder
-public class Product {
-    @Id
-    @Column
-   private BigInteger pid;
-    @Column
-    private BigInteger uid;
-    @Column
-    private String productName;
-    @Column
-    private Date dateAdded;
-    @Column
-    private  Date dateExpiry;
-    @Column(length = 64)
-    private String photos;
-    @Column
-    private String description;
-    @Column
-    private String aid;
-    @Column
-    private BigInteger price;
-
+public class Product extends AuditModel {
+ @Id
+ @Column
+ private Long pid;
+ @Column
+ private Long uid;
+ @Column
+ private String productName;
+ @Column
+ private Date dateAdded;
+ @Column
+ private  Date dateExpiry;
+ @Column(length = 64)
+ private String photos;
+ @Column
+ private String description;
+ @Column
+ private String aid;
+ @Column
+ private BigInteger price;
 }
