@@ -1,4 +1,4 @@
-package com.don8.model;
+package com.don8.model.request;
 
 import lombok.*;
 
