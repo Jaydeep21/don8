@@ -1,6 +1,7 @@
-package com.don8.model;
+package com.don8.model.dbentity;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -10,45 +11,38 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.math.BigInteger;
-import java.sql.Timestamp;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
-@Table(name = "user", schema = "public")
+@Table(name = "user", schema = "public", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "email")
+})
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Builder
-public class User implements UserDetails {
+public class User extends AuditModel implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    BigInteger uid;
+    private Long uid;
     @Size(max = 100)
     @NotBlank(message = "Name is mandatory")
-    String name;
-    @Size(max = 1000)
-    String aids;
+    private String name;
     @NotNull
-    BigInteger phone;
+    private BigInteger phone;
     @Email
     @NotBlank(message = "Email is mandatory")
     @Size(max = 100)
-    String email;
+    private String email;
     @Size(max = 100)
-    String profile_image;
+    private String profile_image;
     @NotBlank(message = "Password is mandatory")
     @Size(max = 200)
-    String password;
+    private String password;
     @NotBlank(message = "Role is mandatory")
     @Size(max = 50)
-    String role;
-//    @NotNull(message = "Created Date is mandatory")
-    Timestamp created_date;
-//    @NotNull(message = "Updated Date is mandatory")
-    Timestamp updated_date;
+    private String role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -3,26 +3,24 @@ package com.don8.controller;
 import com.don8.config.JwtUtils;
 import com.don8.model.*;
 //import com.don8.port.outbound.IJwtUserDetailsService;
+import com.don8.model.dbentity.User;
+import com.don8.model.request.JwtRequest;
+import com.don8.model.response.GenericResponse;
 import com.don8.port.inbound.IUserService;
 import com.don8.port.outbound.IEmailVerification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
-import java.util.concurrent.ThreadLocalRandom;
 
 @RestController
 @CrossOrigin
@@ -59,13 +57,13 @@ public class JwtAuthenticationController {
 
     }
 
-    @PostMapping("/otp")
-    public ResponseEntity<GenericResponse> sendEmail( @RequestBody Email email){
+    @GetMapping("/otp")
+    public ResponseEntity<GenericResponse> sendEmail( @RequestParam("email") String email){
         String otp;
-        if(userService.getUser(email.getEmail())!=null)
+        if(userService.getUser(email)!=null)
             return new ResponseEntity<GenericResponse>(GenericResponse.builder().body("User Already Exists with this Email").message("Error").build(), HttpStatus.BAD_REQUEST);
         try {
-            otp = emailVerification.sendEmail(email.getEmail());
+            otp = emailVerification.sendEmail(email);
         }catch (Exception e){
             e.printStackTrace();
             return new ResponseEntity<GenericResponse>(GenericResponse.builder().body(null).message(e.getMessage()).build(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -83,11 +81,11 @@ public class JwtAuthenticationController {
         }
         return ResponseEntity.ok(GenericResponse.builder().body(user).message("Success").build());
     }
-    @PostMapping("/forgot")
-    public ResponseEntity<GenericResponse> resetPassword( @RequestBody Email email){
+    @GetMapping("/forgot")
+    public ResponseEntity<GenericResponse> resetPassword( @RequestParam("email") String email){
         String otp;
         try {
-            otp = emailVerification.sendEmail(email.getEmail());
+            otp = emailVerification.sendEmail(email);
         }catch (Exception e){
             e.printStackTrace();
             return new ResponseEntity<GenericResponse>(GenericResponse.builder().body(null).message(e.getMessage()).build(), HttpStatus.INTERNAL_SERVER_ERROR);
