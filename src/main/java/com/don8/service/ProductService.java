@@ -27,9 +27,10 @@ public class ProductService {
         return productRepository.findByPid(pid).orElse(null);
     }
     //saving a specific record by using the method save() of CrudRepository
-    public void saveOrUpdate(Product product)
+    public Product saveOrUpdate(Product product)
     {
         productRepository.save(product);
+        return product;
     }
     //deleting a specific record by using the method deleteById() of CrudRepository
     public void delete(int pid)

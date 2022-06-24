@@ -1,12 +1,18 @@
 package com.don8.controller;
 
+import com.don8.model.Image;
 import com.don8.model.Product;
 import com.don8.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.math.BigInteger;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ProductController {
 
@@ -31,13 +37,39 @@ public class ProductController {
     {
         productService.delete(pid);
     }
+
     //creating post mapping that post the product detail in the database
-    @PostMapping("/product")
-    private Long saveBook(@RequestBody Product product)
+    @PostMapping(value = "/product", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    private Product saveProduct(@RequestPart("product") Product product,
+                                @RequestPart("imageFile") MultipartFile[] file)
     {
-        productService.saveOrUpdate(product);
-        return product.getPid();
+       // productService.saveOrUpdate(product);
+        try{
+            Set<Image> images = uploadImage(file);
+            product.setImage(images);
+           return productService.saveOrUpdate(product);
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            return null;
+        }
     }
+
+    public Set<Image> uploadImage(MultipartFile[] multipartFiles) throws IOException
+    {
+        Set<Image> images = new HashSet<>();
+
+        for(MultipartFile file: multipartFiles){
+            Image image = new Image(
+                    file.getOriginalFilename(),
+                    file.getContentType(),
+                    file.getBytes()
+            );
+            images.add(image);
+        }
+        return images;
+    }
+
+
     //creating put mapping that updates the product detail
     @PutMapping("/product")
     private Product update(@RequestBody Product product)
