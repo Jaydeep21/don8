@@ -1,7 +1,9 @@
 package com.don8.model.dbentity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.Type;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -35,8 +37,14 @@ public class User extends AuditModel implements UserDetails {
     @NotBlank(message = "Email is mandatory")
     @Size(max = 100)
     private String email;
-    @Size(max = 100)
-    private String profile_image;
+    @Column(name = "image_type")
+    private String image_type;
+    @Lob
+    @Type(type = "org.hibernate.type.BinaryType")
+    @Column(name = "profile_image", columnDefinition="BLOB")
+    @JsonIgnore
+    private byte[] profile_image;
+
     @NotBlank(message = "Password is mandatory")
     @Size(max = 200)
     private String password;
@@ -81,5 +89,10 @@ public class User extends AuditModel implements UserDetails {
             return false;
         User user = (User) o;
         return Objects.equals(uid, user.uid);
+    }
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    public byte[] getProfile_image() {
+        return profile_image;
     }
 }
