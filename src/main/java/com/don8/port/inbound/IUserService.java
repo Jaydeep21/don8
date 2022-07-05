@@ -6,14 +6,16 @@ import com.don8.model.dbentity.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface IUserService {
 
-    public User getUser(String email);
-    public User storeUser(User user) throws JsonProcessingException;
-    public Boolean resetPassword(JwtRequest jwtRequest);
-    public User updateUserById(Long userId, User user);
-    public Page<User> findAll(Pageable page);
-    public void deleteUser(Long userId);
-    public User findUserById(Long userId);
+    User getUser(String email);
+    User storeUser(User user) throws JsonProcessingException;
+    Boolean resetPassword(JwtRequest jwtRequest);
+    User updateUserById(Long userId, User user, MultipartFile image);
+    Page<User> findAll(Pageable page);
+    void deleteUser(Long userId);
+    User findUserById(Long userId);
+    byte[] getImage(Long userId);
 }

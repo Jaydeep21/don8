@@ -8,14 +8,19 @@ import com.don8.repository.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.ValidationException;
+import java.io.*;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 @Service
 @Slf4j
@@ -54,11 +59,21 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public User updateUserById(Long userId, User u) {
+    public User updateUserById(Long userId, User u, MultipartFile image) {
         return userRepository.findById(userId).map(user -> {
+            if(image!= null){
+                user.setImage_type(image.getContentType());
+                try {
+                    user.setProfile_image(image.getBytes());
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }else{
+                user.setImage_type(null);
+                user.setProfile_image(null);
+            }
             user.setName(u.getName());
             user.setPhone(u.getPhone());
-            user.setProfile_image(u.getProfile_image());
             user.setRole(u.getRole());
             return userRepository.save(user);
         }).orElseThrow(() -> new ResourceNotFoundException("UserId " + userId + " not found"));
@@ -81,4 +96,13 @@ public class UserService implements IUserService {
     public User findUserById(Long userId) {
         return userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("UserId " + userId + " not found"));
     }
+
+    @Override
+    public byte[] getImage(Long userId){
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("UserId " + userId + " not found"));
+        if(user.getProfile_image()==null)
+           throw new ResourceNotFoundException("UserId " + userId + " does not have a profile image");
+        return user.getProfile_image();
+    }
+
 }
