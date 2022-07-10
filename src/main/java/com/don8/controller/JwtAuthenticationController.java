@@ -84,6 +84,8 @@ public class JwtAuthenticationController {
     @GetMapping("/forgot")
     public ResponseEntity<GenericResponse> resetPassword( @RequestParam("email") String email){
         String otp;
+        if(userService.getUser(email)==null)
+            return new ResponseEntity<GenericResponse>(GenericResponse.builder().body("User does not Exists with this Email").message("Error").build(), HttpStatus.BAD_REQUEST);
         try {
             otp = emailVerification.sendEmail(email);
         }catch (Exception e){
