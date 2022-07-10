@@ -1,9 +1,7 @@
 package com.don8.model.dbentity;
 
-import com.don8.model.Product;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Type;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

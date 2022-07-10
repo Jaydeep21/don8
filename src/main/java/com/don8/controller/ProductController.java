@@ -1,22 +1,30 @@
 package com.don8.controller;
 
-import com.don8.model.Image;
-import com.don8.model.Product;
+import com.don8.model.dbentity.Product;
 import com.don8.service.ProductService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ @author BHARAT VAYITLA
+ */
+
+@RestController
 public class ProductController {
 
-
+    @Autowired
+    private ObjectMapper mapper;
     @Autowired
     ProductService productService;
     //creating a get mapping that retrieves all the product detail from the database
@@ -29,7 +37,7 @@ public class ProductController {
     @GetMapping("/product/{pid}")
     private Product getProduct(@PathVariable("pid") int pid)
     {
-        return productService.getProductById(BigInteger.valueOf(pid));
+        return productService.getProductById(Long.valueOf(pid));
     }
     //creating a delete mapping that deletes a specified product
     @DeleteMapping("/product/{pid}")
@@ -39,42 +47,18 @@ public class ProductController {
     }
 
     //creating post mapping that post the product detail in the database
-    @PostMapping(value = "/product", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    private Product saveProduct(@RequestPart("product") Product product,
-                                @RequestPart("imageFile") MultipartFile[] file)
+    @PostMapping(value = "/{productId}", consumes ={ MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public Product saveProduct( @PathVariable Long productId,
+                               @Valid @RequestPart("product") String product,
+                                @RequestParam(value="productImage", required=false) MultipartFile productImageFile)
     {
        // productService.saveOrUpdate(product);
+        Product modelDTO = null;
         try{
-            Set<Image> images = uploadImage(file);
-            product.setImage(images);
-           return productService.saveOrUpdate(product);
-        }catch (Exception e){
-            System.out.println(e.getMessage());
-            return null;
+           modelDTO = mapper.readValue(product, Product.class);
+        }catch (JsonProcessingException e){
+            throw new RuntimeException(e);
         }
-    }
-
-    public Set<Image> uploadImage(MultipartFile[] multipartFiles) throws IOException
-    {
-        Set<Image> images = new HashSet<>();
-
-        for(MultipartFile file: multipartFiles){
-            Image image = new Image(
-                    file.getOriginalFilename(),
-                    file.getContentType(),
-                    file.getBytes()
-            );
-            images.add(image);
-        }
-        return images;
-    }
-
-
-    //creating put mapping that updates the product detail
-    @PutMapping("/product")
-    private Product update(@RequestBody Product product)
-    {
-        productService.saveOrUpdate(product);
-        return product;
+        return productService.saveOrUpdate(productId, modelDTO, productImageFile);
     }
 }

@@ -1,11 +1,15 @@
-package com.don8.model;
+package com.don8.model.dbentity;
 
 
 import com.don8.model.dbentity.User;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.Set;
@@ -23,7 +27,7 @@ import java.util.Set;
 @Builder
 public class Product {
    @Id
-   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   @GeneratedValue(strategy = GenerationType.AUTO)
    private Long pid;
     @Column
     private Long uid;
@@ -31,32 +35,20 @@ public class Product {
     @NotBlank(message = "Name is mandatory")
     private String productName;
     @Column
+    @NotNull(message = "expiry date is mandatory")
+    @JsonFormat(shape=JsonFormat.Shape.STRING,pattern="yyyy/MM/dd")
     private Date dateAdded;
     @Column
-    @NotBlank(message = "expiry date is mandatory")
+    @NotNull(message = "expiry date is mandatory")
+    @JsonFormat(shape=JsonFormat.Shape.STRING,pattern="yyyy/MM/dd")
     private  Date dateExpiry;
 
-    public Set<Image> getImage() {
-        return image;
-    }
-
-    public void setImage(Set<Image> image) {
-        this.image = image;
-    }
-
-    //    @Column(length = 64)
-//    @NotBlank(message = "product photo is mandatory")
-//    private String photos;
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "product_images",
-            joinColumns = {
-              @JoinColumn(name = "product_id")
-            },
-            inverseJoinColumns = {
-               @JoinColumn(name = "image_id")
-            })
-    @NotBlank(message = "upload image")
-    private Set<Image> image;
+    private String product_image_type;
+    @Lob
+    @Type(type = "org.hibernate.type.BinaryType")
+    @Column(name = "product_image", columnDefinition="BLOB")
+    @JsonIgnore
+    private byte[] product_image;
 
     @Column
     private String description;
