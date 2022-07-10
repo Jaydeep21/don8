@@ -26,7 +26,7 @@ import java.util.*;
 @Builder
 public class User extends AuditModel implements UserDetails {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long uid;
     @Size(max = 100)
     @NotBlank(message = "Name is mandatory")
