@@ -25,7 +25,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Builder
-public class Product {
+public class Product extends AuditModel{
    @Id
    @GeneratedValue(strategy = GenerationType.AUTO)
    private Long pid;
@@ -56,6 +56,8 @@ public class Product {
     private Long aid;
     @Column
     private BigInteger price;
+    @Column
+    private Boolean is_donated;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "uid",referencedColumnName = "uid",insertable = false, updatable = false)
     User user;
