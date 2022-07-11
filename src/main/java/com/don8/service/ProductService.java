@@ -57,7 +57,7 @@ public class ProductService {
             product.setDescription(p.getDescription());
             product.setAid(p.getAid());
             product.setPrice(p.getPrice());
-
+            product.setIs_donated(p.getIs_donated());
             return productRepository.save(product);
         }).orElseThrow(() -> new ResourceNotFoundException("ProductId " + productId + " not found"));
     }
