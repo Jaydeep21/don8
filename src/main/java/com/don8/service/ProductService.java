@@ -1,12 +1,14 @@
 package com.don8.service;
 
 import com.don8.model.dbentity.Product;
+import com.don8.model.dbentity.User;
 import com.don8.model.exception.ResourceNotFoundException;
 import com.don8.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +38,7 @@ public class ProductService {
 
 
     //saving a specific record by using the method save() of CrudRepository
-    public Product saveOrUpdate(Long productId, Product p, MultipartFile product_image)
+    public Product update(Long productId, Product p, MultipartFile product_image)
     {
         return productRepository.findById(productId).map(product -> {
             if(product_image!= null){
@@ -67,8 +69,20 @@ public class ProductService {
         productRepository.deleteById(Long.valueOf(pid));
     }
     //updating a record
-    public void update(Product product, int pid)
-    {
-        productRepository.save(product);
+    public Product save(Product product, MultipartFile product_image){
+        try {
+            product.setProduct_image(product_image.getBytes());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        product.setProduct_image_type(product_image.getContentType());
+        return productRepository.save(product);
+    }
+
+    public byte[] getImage(Long productId) {
+        Product product = productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("ProductId " + productId + " not found"));
+        if(product.getProduct_image()==null)
+            throw new ResourceNotFoundException("ProductId " + productId + " does not have a image");
+        return product.getProduct_image();
     }
 }

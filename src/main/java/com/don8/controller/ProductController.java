@@ -5,7 +5,10 @@ import com.don8.service.ProductService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,6 +24,7 @@ import java.util.Set;
  */
 
 @RestController
+@RequestMapping("/api/product")
 public class ProductController {
 
     @Autowired
@@ -28,27 +32,27 @@ public class ProductController {
     @Autowired
     ProductService productService;
     //creating a get mapping that retrieves all the product detail from the database
-    @GetMapping("/product")
+    @GetMapping("/")
     private List<Product> getAllProducts()
     {
         return productService.getAllProducts();
     }
     //creating a get mapping that retrieves the detail of a specific product
-    @GetMapping("/product/{pid}")
+    @GetMapping("/{pid}")
     private Product getProduct(@PathVariable("pid") int pid)
     {
         return productService.getProductById(Long.valueOf(pid));
     }
     //creating a delete mapping that deletes a specified product
-    @DeleteMapping("/product/{pid}")
+    @DeleteMapping("/{pid}")
     private void deleteProduct(@PathVariable("pid") int pid)
     {
         productService.delete(pid);
     }
 
     //creating post mapping that post the product detail in the database
-    @PostMapping(value = "/{productId}", consumes ={ MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public Product saveProduct( @PathVariable Long productId,
+    @PutMapping(value = "/{productId}", consumes ={ MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public Product updateProduct( @PathVariable Long productId,
                                @Valid @RequestPart("product") String product,
                                 @RequestParam(value="productImage", required=false) MultipartFile productImageFile)
     {
@@ -59,6 +63,25 @@ public class ProductController {
         }catch (JsonProcessingException e){
             throw new RuntimeException(e);
         }
-        return productService.saveOrUpdate(productId, modelDTO, productImageFile);
+        return productService.update(productId, modelDTO, productImageFile);
+    }
+
+    @PostMapping(value = "/", consumes ={ MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<?> saveProduct(
+                                  @Valid @RequestPart("product") String product,
+                                  @RequestParam(value="productImage", required=false) MultipartFile productImageFile)
+    {
+        // productService.saveOrUpdate(product);
+        Product modelDTO = null;
+        try{
+            modelDTO = mapper.readValue(product, Product.class);
+        }catch (JsonProcessingException e){
+            throw new RuntimeException(e);
+        }
+        return ResponseEntity.ok(productService.save( modelDTO, productImageFile));
+    }
+    @GetMapping(value = "/image/{productId}", produces = MediaType.IMAGE_JPEG_VALUE)
+    public Resource getProfile(@PathVariable Long productId){
+        return new ByteArrayResource(productService.getImage(productId));
     }
 }
