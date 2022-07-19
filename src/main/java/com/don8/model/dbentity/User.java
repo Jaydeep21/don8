@@ -40,7 +40,7 @@ public class User extends AuditModel implements UserDetails {
     private String image_type;
     @Lob
     @Type(type = "org.hibernate.type.BinaryType")
-    @Column(name = "profile_image", columnDefinition="BLOB")
+    @Column(name = "profile_image")
     @JsonIgnore
     private byte[] profile_image;
 
