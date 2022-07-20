@@ -44,6 +44,9 @@ public class User extends AuditModel implements UserDetails {
     @JsonIgnore
     private byte[] profile_image;
 
+    @Column(name = "image_url")
+    private String image_url;
+
     @NotBlank(message = "Password is mandatory")
     @Size(max = 200)
     private String password;

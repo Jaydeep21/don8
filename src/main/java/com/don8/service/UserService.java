@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +34,8 @@ public class UserService implements IUserService {
     @Autowired
     ObjectMapper objectMapper;
 
+    @Value("${prod.url}")
+    String url;
     @Override
     public User getUser(String email) {
         return userRepository.findByEmail(email).orElse(null);
@@ -63,6 +66,7 @@ public class UserService implements IUserService {
         return userRepository.findById(userId).map(user -> {
             if(image!= null){
                 user.setImage_type(image.getContentType());
+                user.setImage_url(url+"user/profile/" + String.valueOf(userId));
                 try {
                     user.setProfile_image(image.getBytes());
                 } catch (Exception e) {
@@ -71,6 +75,7 @@ public class UserService implements IUserService {
             }else{
                 user.setImage_type(null);
                 user.setProfile_image(null);
+                user.setImage_url(null);
             }
             user.setName(u.getName());
             user.setPhone(u.getPhone());
