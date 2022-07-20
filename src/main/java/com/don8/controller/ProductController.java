@@ -14,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -31,12 +30,14 @@ public class ProductController {
     private ObjectMapper mapper;
     @Autowired
     ProductService productService;
+
     //creating a get mapping that retrieves all the product detail from the database
     @GetMapping("/")
     private List<Product> getAllProducts()
     {
         return productService.getAllProducts();
     }
+
     //creating a get mapping that retrieves the detail of a specific product
     @GetMapping("/{pid}")
     private Product getProduct(@PathVariable("pid") int pid)
@@ -80,6 +81,7 @@ public class ProductController {
         }
         return ResponseEntity.ok(productService.save( modelDTO, productImageFile));
     }
+
     @GetMapping(value = "/image/{productId}", produces = MediaType.IMAGE_JPEG_VALUE)
     public Resource getProfile(@PathVariable Long productId){
         return new ByteArrayResource(productService.getImage(productId));

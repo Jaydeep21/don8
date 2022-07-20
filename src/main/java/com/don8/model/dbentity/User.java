@@ -50,8 +50,8 @@ public class User extends AuditModel implements UserDetails {
     @NotBlank(message = "Role is mandatory")
     @Size(max = 50)
     private String role;
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    List<Product> product;
+    //@OneToMany(mappedBy = "user", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    //List<Product> product;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
