@@ -7,6 +7,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,10 +34,10 @@ public class ProductController {
     ProductService productService;
 
     //creating a get mapping that retrieves all the product detail from the database
-    @GetMapping("/")
-    private List<Product> getAllProducts()
+    @GetMapping("")
+    private Page<Product> getAllProducts(Pageable pageable)
     {
-        return productService.getAllProducts();
+        return productService.getAllProducts(pageable);
     }
 
     //creating a get mapping that retrieves the detail of a specific product

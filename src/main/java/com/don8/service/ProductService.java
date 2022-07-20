@@ -5,6 +5,8 @@ import com.don8.model.dbentity.User;
 import com.don8.model.exception.ResourceNotFoundException;
 import com.don8.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,11 +26,11 @@ public class ProductService {
     @Autowired
     ProductRepository productRepository;
     //getting all product record by using the method findaAll() of CrudRepository
-    public List<Product> getAllProducts()
+    public Page<Product> getAllProducts(Pageable page)
     {
-        List<Product> product = new ArrayList<>();
-        product.addAll(productRepository.findAll());
-        return product;
+//        List<Product> product = new ArrayList<>();
+//        product.addAll(productRepository.findAll());
+        return productRepository.findAll(page);
     }
     //getting a specific record by using the method findById() of CrudRepository
     public Product getProductById(Long pid)
