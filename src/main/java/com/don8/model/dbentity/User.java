@@ -2,7 +2,6 @@ package com.don8.model.dbentity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Type;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -41,7 +40,7 @@ public class User extends AuditModel implements UserDetails {
     private String image_type;
     @Lob
     @Type(type = "org.hibernate.type.BinaryType")
-    @Column(name = "profile_image", columnDefinition="BLOB")
+    @Column(name = "profile_image")
     @JsonIgnore
     private byte[] profile_image;
 
@@ -54,6 +53,8 @@ public class User extends AuditModel implements UserDetails {
     @NotBlank(message = "Role is mandatory")
     @Size(max = 50)
     private String role;
+    //@OneToMany(mappedBy = "user", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    //List<Product> product;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
