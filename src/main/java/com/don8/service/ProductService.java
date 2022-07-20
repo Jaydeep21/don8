@@ -4,7 +4,9 @@ import com.don8.model.dbentity.Product;
 import com.don8.model.dbentity.User;
 import com.don8.model.exception.ResourceNotFoundException;
 import com.don8.repository.ProductRepository;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,8 @@ public class ProductService {
 
     @Autowired
     ProductRepository productRepository;
+    @Value("${prod.url}")
+    String url;
     //getting all product record by using the method findaAll() of CrudRepository
     public Page<Product> getAllProducts(Pageable page)
     {
@@ -45,6 +49,7 @@ public class ProductService {
         return productRepository.findById(productId).map(product -> {
             if(product_image!= null){
                 product.setProduct_image_type(product_image.getContentType());
+                product.setP_image_url(url+"product/image/"+String.valueOf(productId));
                 try {
                     product.setProduct_image(product_image.getBytes());
                 } catch (Exception e) {
@@ -53,6 +58,7 @@ public class ProductService {
             }else{
                 product.setProduct_image_type(null);
                 product.setProduct_image(null);
+                product.setP_image_url(null);
             }
             product.setUid(product.getUid());
             product.setProductName(p.getProductName());
@@ -74,11 +80,14 @@ public class ProductService {
     public Product save(Product product, MultipartFile product_image){
         try {
             product.setProduct_image(product_image.getBytes());
+           // product.setP_image_url(url+"product/image"+String.valueOf(product.getPid()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         product.setProduct_image_type(product_image.getContentType());
-        return productRepository.save(product);
+        Product p=productRepository.save(product);
+        p.setP_image_url(url+"product/image/"+String.valueOf(p.getPid()));
+        return productRepository.save(p);
     }
 
     public byte[] getImage(Long productId) {
