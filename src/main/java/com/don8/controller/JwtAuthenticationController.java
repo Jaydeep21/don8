@@ -19,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
@@ -102,7 +103,12 @@ public class JwtAuthenticationController {
 
     }
     @GetMapping("/token")
-    public ResponseEntity<?> getTokenDetails(@RequestParam("token") String jwt){
+    public ResponseEntity<?> getTokenDetails( HttpServletRequest request){
+        String headerAuth = request.getHeader("Authorization");
+        String jwt = null;
+        if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
+            jwt = headerAuth.substring(7, headerAuth.length());
+        }
         if (!StringUtils.isEmpty(jwt) && jwtUtils.validateJwtToken(jwt)){
             String username = jwtUtils.getUserNameFromJwtToken(jwt);
             User user = userService.getUser(username);
