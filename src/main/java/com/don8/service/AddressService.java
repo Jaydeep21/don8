@@ -45,6 +45,8 @@ public class AddressService implements IAddressService {
             address.setLongitudeLatitude(ad.getLongitudeLatitude());
             address.setState(ad.getState());
             address.setPinCode(ad.getPinCode());
+            address.setName(ad.getName());
+            address.setPhoneNumber(ad.getPhoneNumber());
             return addressRepository.save(address);
         }).orElseThrow(() -> new ResourceNotFoundException("AddressId " + addressId + "not found"));
 
