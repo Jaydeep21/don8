@@ -1,15 +1,22 @@
 package com.don8.service;
 
+import com.don8.config.JwtUtils;
 import com.don8.model.dbentity.Product;
 import com.don8.model.dbentity.User;
 import com.don8.model.exception.ResourceNotFoundException;
+import com.don8.port.inbound.IUserService;
 import com.don8.repository.ProductRepository;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -25,6 +32,15 @@ public class ProductService {
 
     @Autowired
     ProductRepository productRepository;
+    @Value("${prod.url}")
+    String url;
+
+    @Autowired
+    IUserService userService;
+
+    @Autowired
+    JwtUtils jwtUtils;
+
     //getting all product record by using the method findaAll() of CrudRepository
     public Page<Product> getAllProducts(Pageable page)
     {
@@ -45,6 +61,7 @@ public class ProductService {
         return productRepository.findById(productId).map(product -> {
             if(product_image!= null){
                 product.setProduct_image_type(product_image.getContentType());
+                product.setP_image_url(url+"product/image/"+String.valueOf(productId));
                 try {
                     product.setProduct_image(product_image.getBytes());
                 } catch (Exception e) {
@@ -53,6 +70,7 @@ public class ProductService {
             }else{
                 product.setProduct_image_type(null);
                 product.setProduct_image(null);
+                product.setP_image_url(null);
             }
             product.setUid(product.getUid());
             product.setProductName(p.getProductName());
@@ -74,11 +92,14 @@ public class ProductService {
     public Product save(Product product, MultipartFile product_image){
         try {
             product.setProduct_image(product_image.getBytes());
+           // product.setP_image_url(url+"product/image"+String.valueOf(product.getPid()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         product.setProduct_image_type(product_image.getContentType());
-        return productRepository.save(product);
+        Product p=productRepository.save(product);
+        p.setP_image_url(url+"product/image/"+String.valueOf(p.getPid()));
+        return productRepository.save(p);
     }
 
     public byte[] getImage(Long productId) {
@@ -86,5 +107,22 @@ public class ProductService {
         if(product.getProduct_image()==null)
             throw new ResourceNotFoundException("ProductId " + productId + " does not have a image");
         return product.getProduct_image();
+    }
+
+    public Page<Product> getProductsByUserId(HttpServletRequest request, Pageable pageable) {
+        String headerAuth = request.getHeader("Authorization");
+        String jwt = null;
+        Long userId;
+        System.out.println("Auth Header: " + headerAuth);
+        if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
+            jwt = headerAuth.substring(7, headerAuth.length());
+        }
+        if (!StringUtils.isEmpty(jwt) && jwtUtils.validateJwtToken(jwt)) {
+            String username = jwtUtils.getUserNameFromJwtToken(jwt);
+            User user = userService.getUser(username);
+             userId=user.getUid();
+            return productRepository.findByUid(userId, pageable);
+        }
+        return null;
     }
 }
