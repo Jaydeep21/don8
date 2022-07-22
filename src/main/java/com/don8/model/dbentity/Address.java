@@ -8,6 +8,7 @@ import org.hibernate.annotations.OnDeleteAction;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.math.BigInteger;
 
 @Entity
 @Table(name = "address")
@@ -25,11 +26,15 @@ public class Address extends AuditModel {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private User user;
+    @Column
+    private String name;
+    @Column
+    private BigInteger phoneNumber;
     @Size(max = 100)
     @NotBlank(message = "Address Line 1 is mandatory")
     private String line1;
+    @Column(name= "line2", nullable = true)
     @Size(max = 100)
-    @NotBlank(message = "Address line 2 is mandatory")
     private String line2;
     @Column(name = "pincode")
     @Size(max = 100)
