@@ -49,6 +49,9 @@ public class Product extends AuditModel{
     @JsonIgnore
     private byte[] product_image;
 
+ @Column(name = "p_image_url")
+ private String p_image_url;
+
     @Column
     private String description;
     @Column
