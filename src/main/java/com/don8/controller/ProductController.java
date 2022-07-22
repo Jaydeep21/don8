@@ -1,6 +1,7 @@
 package com.don8.controller;
 
 import com.don8.model.dbentity.Product;
+import com.don8.model.response.GenericResponse;
 import com.don8.service.ProductService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.HashSet;
@@ -87,5 +89,11 @@ public class ProductController {
     @GetMapping(value = "/image/{productId}", produces = MediaType.IMAGE_JPEG_VALUE)
     public Resource getProfile(@PathVariable Long productId){
         return new ByteArrayResource(productService.getImage(productId));
+    }
+
+    @GetMapping("/byUser")
+    public Page<Product> getProductsByUser(HttpServletRequest request, Pageable pageable)
+    {
+        return productService.getProductsByUserId(request,pageable);
     }
 }
