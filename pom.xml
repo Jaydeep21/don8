@@ -112,5 +112,6 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
+		<finalName>don8</finalName>
 	</build>
 </project>
