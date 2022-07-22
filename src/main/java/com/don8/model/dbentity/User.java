@@ -49,6 +49,7 @@ public class User extends AuditModel implements UserDetails {
 
     @NotBlank(message = "Password is mandatory")
     @Size(max = 200)
+    @JsonIgnore
     private String password;
     @NotBlank(message = "Role is mandatory")
     @Size(max = 50)

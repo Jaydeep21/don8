@@ -1,7 +1,6 @@
 package com.don8.controller;
 
 import com.don8.config.JwtUtils;
-import com.don8.model.*;
 //import com.don8.port.outbound.IJwtUserDetailsService;
 import com.don8.model.dbentity.User;
 import com.don8.model.request.JwtRequest;
@@ -17,8 +16,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
@@ -100,6 +101,23 @@ public class JwtAuthenticationController {
             return ResponseEntity.ok(GenericResponse.builder().body("Updated Password Successfully").message("Success").build());
         return ResponseEntity.ok(GenericResponse.builder().body("Could not update password as email does not exists").message("Error").build());
 
+    }
+    @GetMapping("/token")
+    public ResponseEntity<?> getTokenDetails( HttpServletRequest request){
+        String headerAuth = request.getHeader("Authorization");
+        String jwt = null;
+        System.out.println("Auth Header: "+ headerAuth);
+        if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
+            jwt = headerAuth.substring(7, headerAuth.length());
+        }
+        if (!StringUtils.isEmpty(jwt) && jwtUtils.validateJwtToken(jwt)){
+            String username = jwtUtils.getUserNameFromJwtToken(jwt);
+            User user = userService.getUser(username);
+            return ResponseEntity.ok(user);
+        }
+        return new ResponseEntity(GenericResponse.builder()
+                .message("Error")
+                .body("Invalid Token").build(), HttpStatus.BAD_REQUEST);
     }
 
 }
