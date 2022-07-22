@@ -106,6 +106,7 @@ public class JwtAuthenticationController {
     public ResponseEntity<?> getTokenDetails( HttpServletRequest request){
         String headerAuth = request.getHeader("Authorization");
         String jwt = null;
+        System.out.println("Auth Header: "+ headerAuth);
         if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
             jwt = headerAuth.substring(7, headerAuth.length());
         }
