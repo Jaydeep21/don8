@@ -1,6 +1,7 @@
 package com.don8.model.dbentity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.hibernate.annotations.Type;
 import org.springframework.security.core.GrantedAuthority;
@@ -49,13 +50,11 @@ public class User extends AuditModel implements UserDetails {
 
     @NotBlank(message = "Password is mandatory")
     @Size(max = 200)
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     @NotBlank(message = "Role is mandatory")
     @Size(max = 50)
     private String role;
-    //@OneToMany(mappedBy = "user", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    //List<Product> product;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
