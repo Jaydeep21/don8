@@ -1,16 +1,15 @@
 //package com.don8.controller;
 //
+//import com.don8.config.TestSecurityConfig;
 //import com.don8.model.dbentity.User;
 //import com.don8.port.inbound.IUserService;
 //import org.junit.Before;
 //import org.junit.jupiter.api.Test;
-//import org.junit.jupiter.api.extension.ExtendWith;
 ////import org.junit.runner.RunWith;
 //import org.junit.runner.RunWith;
 //import org.mockito.InjectMocks;
 //import org.mockito.Mock;
 //import org.mockito.MockitoAnnotations;
-//import org.mockito.junit.jupiter.MockitoExtension;
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 //import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
@@ -19,9 +18,10 @@
 //import org.springframework.data.domain.Page;
 //import org.springframework.data.domain.Pageable;
 //import org.springframework.data.domain.Sort;
+//import org.springframework.http.MediaType;
+//import org.springframework.test.context.TestPropertySource;
 //import org.springframework.test.context.junit4.SpringRunner;
 //import org.springframework.test.web.servlet.MockMvc;
-//import org.springframework.web.multipart.MultipartFile;
 //
 //import java.math.BigInteger;
 //import java.util.ArrayList;
@@ -39,10 +39,12 @@
 //import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 //
 ////import org.junit.platform.runner.JUnitPlatform;
+//@SpringBootTest()
+////classes = TestSecurityConfig.class
 //@RunWith(SpringRunner.class)
-//@SpringBootTest
 //@AutoConfigureMockMvc
 //@EnableAutoConfiguration(exclude = { SecurityAutoConfiguration.class})
+////@TestPropertySource(locations="classpath:test.properties")
 //class UserControllerTest {
 //    @InjectMocks
 //    UserController userController;
@@ -55,6 +57,7 @@
 //    public void init() {
 //        MockitoAnnotations.initMocks(this);
 //    }
+//
 //    @Test
 //    void getAllUser() {
 //        List<User> users = new ArrayList<>();
@@ -172,8 +175,8 @@
 ////                        .name("Testing")
 ////                        .email("asdf@gmail.com")
 ////                        .build());
-//        this.mockMvc.perform(put("/api/user/{userId}", 1))
-//                .andDo(print()).andExpect(status().isOk());
+//        this.mockMvc.perform(put("/api/user/{userId}", 1).contentType( { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE }))
+//                .andDo(print()).andExpect(status().isUnauthorized());
 //    }
 //
 //    @Test
