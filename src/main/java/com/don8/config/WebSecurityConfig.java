@@ -70,7 +70,7 @@
 package com.don8.config;
 
 //import com.don8.port.outbound.IJwtUserDetailsService;
-import com.don8.service.JwtUserDetailsService;
+import com.don8.core.service.JwtUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
