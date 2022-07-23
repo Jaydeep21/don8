@@ -1,6 +1,7 @@
 package com.don8.core.service;
 
 import com.don8.config.JwtUtils;
+import com.don8.core.decorators.TokenUtil;
 import com.don8.core.model.dbentity.Product;
 import com.don8.core.model.dbentity.User;
 import com.don8.core.model.exception.ResourceNotFoundException;
@@ -36,11 +37,12 @@ public class ProductService {
     @Autowired
     JwtUtils jwtUtils;
 
+    @Autowired
+    TokenUtil tokenUtil;
+
     //getting all product record by using the method findaAll() of CrudRepository
     public Page<Product> getAllProducts(Pageable page)
     {
-//        List<Product> product = new ArrayList<>();
-//        product.addAll(productRepository.findAll());
         return productRepository.findAll(page);
     }
     //getting a specific record by using the method findById() of CrudRepository
@@ -62,10 +64,6 @@ public class ProductService {
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
-            }else{
-                product.setProduct_image_type(null);
-                product.setProduct_image(null);
-                product.setP_image_url(null);
             }
             product.setUid(product.getUid());
             product.setProductName(p.getProductName());
@@ -105,19 +103,6 @@ public class ProductService {
     }
 
     public Page<Product> getProductsByUserId(HttpServletRequest request, Pageable pageable) {
-        String headerAuth = request.getHeader("Authorization");
-        String jwt = null;
-        Long userId;
-        System.out.println("Auth Header: " + headerAuth);
-        if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
-            jwt = headerAuth.substring(7, headerAuth.length());
-        }
-        if (!StringUtils.isEmpty(jwt) && jwtUtils.validateJwtToken(jwt)) {
-            String username = jwtUtils.getUserNameFromJwtToken(jwt);
-            User user = userService.getUser(username);
-             userId=user.getUid();
-            return productRepository.findByUid(userId, pageable);
-        }
-        return null;
+        return productRepository.findByUid(tokenUtil.getUserFromToken(request).getUid(), pageable);
     }
 }
