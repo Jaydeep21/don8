@@ -11,9 +11,7 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v3
     - name: Set up JDK 11
@@ -24,12 +22,17 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn clean install
-    - name: Build & push Dockerfile image
-      uses: mr-smithers-excellent/docker-build-push@v5
+    - name: Login to DockerHub
+      uses: docker/login-action@v1
       with:
-        image: jaydeep65/don8
-        tags: latest
-        registry: docker.io
-        dockerfile: Dockerfile
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
+    - name: Push to DockerHub
+      run: docker push jaydeep65/don8:${{ secrets.MAJOR }}.${{ secrets.MINOR }}
+    - name: Update Minor version
+      uses: hmanzur/actions-set-secret@v2.0.0
+      with:
+        name: 'MINOR'
+        value: $((${{ secrets.MINOR }}+1))
+        repository: jaydeep65/don8
+        token: ${{ secrets.REPO_ACCESS_TOKEN }}
