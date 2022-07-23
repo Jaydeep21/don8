@@ -68,10 +68,6 @@ public class UserService implements IUserService {
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
-            }else{
-                user.setImage_type(null);
-                user.setProfile_image(null);
-                user.setImage_url(null);
             }
             user.setName(u.getName());
             user.setPhone(u.getPhone());
