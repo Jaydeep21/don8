@@ -23,14 +23,14 @@ import java.util.Date;
 @Setter
 @Builder
 public class Product extends AuditModel{
-   @Id
-   @GeneratedValue(strategy = GenerationType.AUTO)
-   private Long pid;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long pid;
     @Column
     private Long uid;
     @Column
     @NotBlank(message = "Name is mandatory")
-     private String productName;
+    private String productName;
     @Column
     @NotNull(message = "date added is mandatory")
     @JsonFormat(shape=JsonFormat.Shape.STRING,pattern="yyyy/MM/dd")
@@ -47,8 +47,8 @@ public class Product extends AuditModel{
     @JsonIgnore
     private byte[] product_image;
 
- @Column(name = "p_image_url")
- private String p_image_url;
+    @Column(name = "p_image_url")
+    private String p_image_url;
 
     @Column
     private String description;
@@ -62,5 +62,8 @@ public class Product extends AuditModel{
     @JoinColumn(name = "uid",referencedColumnName = "uid",insertable = false, updatable = false)
     User user;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "aid",referencedColumnName = "aid",insertable = false, updatable = false)
+    Address address;
 
 }
