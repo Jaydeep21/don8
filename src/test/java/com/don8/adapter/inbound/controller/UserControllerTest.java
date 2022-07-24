@@ -168,19 +168,18 @@ class UserControllerTest {
         assertThat(user.getEmail().equals("asdf@gmail.com")).isTrue();
     }
 
-    @Test
-    void updateUserSuccessCase() throws Exception {
-        this.mockMvc.perform(put("/api/user/{userId}", 1)
-                        .contentType(  MediaType.MULTIPART_FORM_DATA_VALUE +";"+ MediaType.APPLICATION_JSON_VALUE )
-                        .param("user","{\n" +
-                                "    \"name\": \"Bharath\",\n" +
-                                "    \"phone\" : 1234568909,\n" +
-                                "    \n" +
-                                "    \"role\": \"organization\"\n" +
-                                "}")
-                )
-                .andDo(print()).andExpect(status().isOk());
-    }
+//    @Test
+//    void updateUserSuccessCase() throws Exception {
+//        this.mockMvc.perform(put("/api/user/{userId}", 1)
+//                        .contentType(  MediaType.MULTIPART_FORM_DATA_VALUE +";"+ MediaType.APPLICATION_JSON_VALUE )
+//                        .param("user","{\n" +
+//                                "    \"name\": \"Bharath\",\n" +
+//                                "    \"phone\" : 1234568909,\n" +
+//                                "    \"role\": \"organization\"\n" +
+//                                "}")
+//                )
+//                .andDo(print()).andExpect(status().isOk());
+//    }
     @Test
     void updateUserFailureCase() throws Exception {
         this.mockMvc.perform(put("/api/user/{userId}", 1)
