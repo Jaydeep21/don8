@@ -39,7 +39,7 @@ public class ProductController {
 
     //creating a get mapping that retrieves the detail of a specific product
     @GetMapping("/{pid}")
-    private Product getProduct(@PathVariable("pid") int pid)
+    public Product getProduct(@PathVariable("pid") int pid)
     {
         return productService.getProductById(Long.valueOf(pid));
     }
